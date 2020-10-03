@@ -1,0 +1,12 @@
+﻿@page
+@model Reader.Pages.UnreadModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+
+<ul>
+    @foreach (var item in Model.Items)
+    {
+        <li>@item.Title</li>
+    }
+</ul>

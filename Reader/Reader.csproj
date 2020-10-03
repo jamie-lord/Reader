@@ -5,4 +5,19 @@
     <UserSecretsId>77e61e72-716c-4df7-8798-86a81aa3fe9d</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Reader.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0-rc.1.20451.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0-rc.1.20451.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0-rc.1.20451.13" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,25 @@
+﻿@page
+@model Reader.Pages.FeedsModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+<h1>Feeds</h1>
+
+<form method="post">
+    <input asp-for="NewFeedUri" />
+    <button type="submit">Add</button>
+</form>
+
+@if (Model.Feeds.Count() == 0)
+{
+    <p>You don't have any feeds yet</p>
+}
+else
+{
+    <ul>
+        @foreach (var feed in Model.Feeds)
+        {
+            <li>@feed.Title</li>
+        }
+    </ul>
+}
