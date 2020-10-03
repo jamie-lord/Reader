@@ -1,0 +1,19 @@
+﻿@page
+@model Reader.Pages.FeedsModel
+@{
+}
+<h1>Feeds</h1>
+
+@if (Model.Feeds.Count() == 0)
+{
+    <p>You don't have any feeds yet</p>
+}
+else
+{
+    <ul>
+        @foreach (var feed in Model.Feeds)
+        {
+            <li>@feed.Title</li>
+        }
+    </ul>
+}
