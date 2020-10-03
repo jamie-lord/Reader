@@ -42,6 +42,23 @@ namespace Reader.Pages
             _context.Feeds.Add(newFeed);
             await _context.SaveChangesAsync();
 
+            foreach (var item in feed.Items)
+            {
+                var newItem = new Item
+                {
+                    Author = item.Author,
+                    Categories = item.Categories?.ToList(),
+                    Content = item.Content,
+                    Description = item.Description,
+                    Feed = newFeed,
+                    Published = item.PublishingDate,
+                    Title = item.Title,
+                    Uri = item.Link
+                };
+                _context.Items.Add(newItem);
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToPage("Feeds");
         }
     }

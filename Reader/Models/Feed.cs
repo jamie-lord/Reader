@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Reader.Models
 {
@@ -9,5 +10,6 @@ namespace Reader.Models
         public string Title { get; set; }
         public DateTime Added { get; set; }
         public DateTime LastChecked { get; set; }
+        public ICollection<Item> Items { get; set; }
     }
 }
