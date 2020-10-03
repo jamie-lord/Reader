@@ -15,6 +15,14 @@ namespace Reader.Pages
         private readonly Context _context;
         public IEnumerable<Feed> Feeds { get; private set; }
 
+        public string PageTitle
+        {
+            get
+            {
+                return $"Feeds ({Feeds?.Count()})";
+            }
+        }
+
         public FeedsModel(Context context)
         {
             _context = context;
@@ -44,6 +52,12 @@ namespace Reader.Pages
 
             foreach (var item in feed.Items)
             {
+                if (_context.Items.Any(x => x.Uri == item.Link))
+                {
+                    // Item already exists from previous fetch or another feed
+                    continue;
+                }
+
                 var newItem = new Item
                 {
                     Author = item.Author,
