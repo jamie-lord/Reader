@@ -5,7 +5,7 @@
 }
 <h1>Feeds</h1>
 
-<form method="post">
+<form method="post" asp-page-handler="AddNewFeed">
     <input asp-for="NewFeedUri" />
     <button type="submit">Add</button>
 </form>
@@ -19,7 +19,7 @@ else
     <ul>
         @foreach (var feed in Model.Feeds)
         {
-            <li>@feed.Title</li>
+            <li>@feed.Title @feed.LastChecked.ToString() <form method="post" asp-page-handler="RefreshFeed" asp-route-id="@feed.Id"><button type="submit">Refresh</button></form></li>
         }
     </ul>
 }
