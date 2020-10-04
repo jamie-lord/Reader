@@ -4,9 +4,16 @@
     ViewData["Title"] = Model.PageTitle;
 }
 
-<ul>
-    @foreach (var item in Model.Items)
-    {
-        <li>@item.Title</li>
-    }
-</ul>
+@if (!Model.Items.Any())
+{
+    <p>You have no unread items</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in Model.Items)
+        {
+            <li>@item.Title</li>
+        }
+    </ul>
+}
