@@ -19,7 +19,7 @@ else
     <ul>
         @foreach (var feed in Model.Feeds)
         {
-            <li>@feed.Title @feed.LastChecked.ToString() <form method="post" asp-page-handler="RefreshFeed" asp-route-id="@feed.Id"><button type="submit">Refresh</button></form></li>
+            <li>@feed.Title @feed.LastChecked.ToString() <form method="post" asp-page-handler="RefreshFeed" asp-route-id="@feed.Id"><button type="submit">Refresh</button></form><form method="post" asp-page-handler="DeleteFeed" asp-route-id="@feed.Id"><button type="submit">Delete</button></form></li>
         }
     </ul>
 }

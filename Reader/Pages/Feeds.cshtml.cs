@@ -111,5 +111,20 @@ namespace Reader.Pages
 
             return RedirectToPage("Feeds");
         }
+
+        public async Task<IActionResult> OnPostDeleteFeed(int id)
+        {
+            var feed = _context.Feeds.Find(id);
+
+            var items = _context.Items.Where(x => x.Feed == feed).ToList();
+            foreach (var item in items)
+            {
+                _context.Items.Remove(item);
+            }
+            _context.Feeds.Remove(feed);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("Feeds");
+        }
     }
 }
