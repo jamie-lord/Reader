@@ -22,7 +22,7 @@ namespace Reader.Pages
         {
             get
             {
-                return $"Feeds ({Feeds?.Count()})";
+                return $"{Feeds?.Count()} Feeds";
             }
         }
 

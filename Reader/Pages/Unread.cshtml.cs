@@ -15,7 +15,7 @@ namespace Reader.Pages
         {
             get
             {
-                return $"Unread ({Items?.Count()})";
+                return $"{Items?.Count()} Unread";
             }
         }
 
