@@ -1,4 +1,5 @@
 ﻿using Reader.Data;
+using Reader.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace Reader.Services
     public interface IItemsService
     {
         Task GetFullContent(int id);
+        Item GetItem(int id);
     }
 
     public class ItemsService : IItemsService
@@ -36,6 +38,11 @@ namespace Reader.Services
                 item.FullContent = article.Content;
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public Item GetItem(int id)
+        {
+            return _context.Items.Find(id);
         }
     }
 }
