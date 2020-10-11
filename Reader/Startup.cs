@@ -24,6 +24,7 @@ namespace Reader
             services.AddDbContext<Context>();
 
             services.AddScoped<IFeedsService, FeedsService>();
+            services.AddScoped<IItemsService, ItemsService>();
 
             services.AddHostedService<RefreshAllFeedsBackgroundService>();
         }

@@ -14,5 +14,6 @@ namespace Reader.Models
         public string Author { get; set; }
         public IList<string> Categories { get; set; }
         public string Content { get; set; }
+        public string FullContent { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reader.Data;
 using Reader.Models;
+using Reader.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Reader.Pages
     public class FeedsModel : PageModel
     {
         private readonly Context _context;
+        private readonly IItemsService _itemsService;
+
         public IEnumerable<Feed> Feeds { get; private set; }
 
         public string PageTitle
@@ -23,9 +26,10 @@ namespace Reader.Pages
             }
         }
 
-        public FeedsModel(Context context)
+        public FeedsModel(Context context, IItemsService itemsService)
         {
             _context = context;
+            _itemsService = itemsService;
         }
 
         public void OnGet()
@@ -107,6 +111,8 @@ namespace Reader.Pages
                 };
                 _context.Items.Add(newItem);
                 await _context.SaveChangesAsync();
+
+                await _itemsService.GetFullContent(newItem.Id);
             }
 
             return RedirectToPage("Feeds");
