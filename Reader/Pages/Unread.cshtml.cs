@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Reader.Data;
 using Reader.Models;
+using Reader.Services;
 
 namespace Reader.Pages
 {
     public class UnreadModel : PageModel
     {
-        private readonly Context _context;
+        private readonly IItemsService _itemsService;
+
         public IEnumerable<Item> Items { get; private set; }
 
         public string PageTitle
@@ -19,14 +20,14 @@ namespace Reader.Pages
             }
         }
 
-        public UnreadModel(Context context)
+        public UnreadModel(IItemsService itemsService)
         {
-            _context = context;
+            _itemsService = itemsService;
         }
 
         public void OnGet()
         {
-            Items = _context.Items.ToList();
+            Items = _itemsService.Unread();
         }
     }
 }
