@@ -1,4 +1,5 @@
 ﻿@page
+@using Newtonsoft.Json;
 @model Reader.Pages.UnreadModel
 @{
     ViewData["Title"] = Model.PageTitle;
@@ -10,18 +11,13 @@
 }
 else
 {
+    <form method="post" asp-page-handler="MarkAllAsRead" asp-route-ids="@JsonConvert.SerializeObject(Model.Items.Select(i => i.Id))"><button type="submit">Mark all as read</button></form>
+
     <ul>
         @foreach (var item in Model.Items)
         {
             <li>
-                @if (string.IsNullOrWhiteSpace(item.FullContent))
-                {
-                    <a href="@item.Uri" rel=”noreferrer” target="_blank">@item.Title</a>
-                }
-                else
-                {
-                    <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a>
-                }
+                <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><form method="post" asp-page-handler="MarkAsRead" asp-route-id="@item.Id"><button type="submit">Mark as read</button></form>
             </li>
         }
     </ul>

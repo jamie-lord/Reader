@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Reader.Models;
 using System.Collections.Generic;
@@ -13,6 +14,10 @@ namespace Reader.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(@"Data Source=Reader.db");
+
+#if DEBUG
+            optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+#endif
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

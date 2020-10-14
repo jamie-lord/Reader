@@ -26,7 +26,9 @@ namespace Reader
             services.AddScoped<IFeedsService, FeedsService>();
             services.AddScoped<IItemsService, ItemsService>();
 
+#if !DEBUG
             services.AddHostedService<RefreshAllFeedsBackgroundService>();
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

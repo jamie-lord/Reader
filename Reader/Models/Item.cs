@@ -15,5 +15,6 @@ namespace Reader.Models
         public IList<string> Categories { get; set; }
         public string Content { get; set; }
         public string FullContent { get; set; }
+        public DateTime? Read { get; set; }
     }
 }

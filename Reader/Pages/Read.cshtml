@@ -1,0 +1,21 @@
+﻿@page
+@model Reader.Pages.ReadModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+
+@if (!Model.Items.Any())
+{
+    <p>You have no read items</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in Model.Items)
+        {
+            <li>
+                <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><form method="post" asp-page-handler="MarkAsUnread" asp-route-id="@item.Id"><button type="submit">Mark as unread</button></form>
+            </li>
+        }
+    </ul>
+}
