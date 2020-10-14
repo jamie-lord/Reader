@@ -14,6 +14,7 @@ namespace Reader.Services
         IEnumerable<UnreadItem> Unread();
         Task AddItem(Item item);
         bool ItemExists(string uri);
+        Task MarkAsRead(int id);
     }
 
     public class ItemsService : IItemsService
@@ -61,9 +62,17 @@ namespace Reader.Services
             return _context.Items.Any(x => x.Uri == uri);
         }
 
+        public async Task MarkAsRead(int id)
+        {
+            var item = _context.Items.Find(id);
+            item.Read = DateTime.Now;
+            _context.Items.Update(item);
+            await _context.SaveChangesAsync();
+        }
+
         public IEnumerable<UnreadItem> Unread()
         {
-            return _context.Items.Select(i =>
+            return _context.Items.Where(i => i.Read == null).Select(i =>
             new UnreadItem
             {
                 Id = i.Id,

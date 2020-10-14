@@ -14,7 +14,7 @@ else
         @foreach (var item in Model.Items)
         {
             <li>
-                <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a>
+                <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><form method="post" asp-page-handler="MarkAsRead" asp-route-id="@item.Id"><button type="submit">Mark as read</button></form>
             </li>
         }
     </ul>
