@@ -1,4 +1,5 @@
 ﻿@page
+@using Newtonsoft.Json;
 @model Reader.Pages.UnreadModel
 @{
     ViewData["Title"] = Model.PageTitle;
@@ -10,6 +11,8 @@
 }
 else
 {
+    <form method="post" asp-page-handler="MarkAllAsRead" asp-route-ids="@JsonConvert.SerializeObject(Model.Items.Select(i => i.Id))"><button type="submit">Mark all as read</button></form>
+
     <ul>
         @foreach (var item in Model.Items)
         {

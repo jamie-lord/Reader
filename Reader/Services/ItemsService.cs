@@ -11,10 +11,13 @@ namespace Reader.Services
     {
         Task GetFullContent(int id);
         Item GetItem(int id);
-        IEnumerable<UnreadItem> Unread();
+        IEnumerable<ItemSummary> GetUnread();
+        IEnumerable<ItemSummary> GetRead();
         Task AddItem(Item item);
         bool ItemExists(string uri);
         Task MarkAsRead(int id);
+        Task MarkAllAsRead(IEnumerable<int> ids);
+        Task MarkAsUnread(int id);
     }
 
     public class ItemsService : IItemsService
@@ -62,18 +65,49 @@ namespace Reader.Services
             return _context.Items.Any(x => x.Uri == uri);
         }
 
+        public async Task MarkAllAsRead(IEnumerable<int> ids)
+        {
+            var now = DateTime.Now;
+            foreach (var id in ids)
+            {
+                var item = _context.Items.Find(id);
+                item.Read = now;
+                item.FullContent = null;
+                _context.Items.Update(item);
+            }
+            await _context.SaveChangesAsync();
+        }
+
         public async Task MarkAsRead(int id)
         {
             var item = _context.Items.Find(id);
             item.Read = DateTime.Now;
+            item.FullContent = null;
             _context.Items.Update(item);
             await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<UnreadItem> Unread()
+        public async Task MarkAsUnread(int id)
+        {
+            var item = _context.Items.Find(id);
+            item.Read = null;
+            _context.Items.Update(item);
+            await _context.SaveChangesAsync();
+        }
+
+        public IEnumerable<ItemSummary> GetUnread()
         {
             return _context.Items.Where(i => i.Read == null).Select(i =>
-            new UnreadItem
+            new ItemSummary
+            {
+                Id = i.Id,
+                Title = i.Title
+            });
+        }
+
+        public IEnumerable<ItemSummary> GetRead()
+        {
+            return _context.Items.Where(i => i.Read != null).Select(i => new ItemSummary
             {
                 Id = i.Id,
                 Title = i.Title
@@ -81,7 +115,7 @@ namespace Reader.Services
         }
     }
 
-    public class UnreadItem
+    public class ItemSummary
     {
         public int Id { get; set; }
         public string Title { get; set; }
