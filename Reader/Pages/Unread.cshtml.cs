@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Reader.Models;
 using Reader.Services;
 
 namespace Reader.Pages
@@ -10,7 +9,7 @@ namespace Reader.Pages
     {
         private readonly IItemsService _itemsService;
 
-        public IEnumerable<Item> Items { get; private set; }
+        public IEnumerable<UnreadItem> Items { get; private set; }
 
         public string PageTitle
         {

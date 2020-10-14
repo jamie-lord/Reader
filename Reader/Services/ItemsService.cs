@@ -11,7 +11,7 @@ namespace Reader.Services
     {
         Task GetFullContent(int id);
         Item GetItem(int id);
-        IEnumerable<Item> Unread();
+        IEnumerable<UnreadItem> Unread();
         Task AddItem(Item item);
         bool ItemExists(string uri);
     }
@@ -61,9 +61,20 @@ namespace Reader.Services
             return _context.Items.Any(x => x.Uri == uri);
         }
 
-        public IEnumerable<Item> Unread()
+        public IEnumerable<UnreadItem> Unread()
         {
-            return _context.Items;
+            return _context.Items.Select(i =>
+            new UnreadItem
+            {
+                Id = i.Id,
+                Title = i.Title
+            });
         }
+    }
+
+    public class UnreadItem
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
     }
 }

@@ -14,14 +14,7 @@ else
         @foreach (var item in Model.Items)
         {
             <li>
-                @if (string.IsNullOrWhiteSpace(item.FullContent))
-                {
-                    <a href="@item.Uri" rel=”noreferrer” target="_blank">@item.Title</a>
-                }
-                else
-                {
-                    <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a>
-                }
+                <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a>
             </li>
         }
     </ul>
