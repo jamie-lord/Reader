@@ -12,7 +12,7 @@ namespace Reader.Pages
     {
         private readonly IItemsService _itemsService;
 
-        public IEnumerable<ItemSummary> Items { get; private set; }
+        public IEnumerable<UnreadItemSummary> Items { get; private set; }
 
         public string PageTitle
         {

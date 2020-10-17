@@ -16,7 +16,7 @@ else
         @foreach (var item in Model.Items)
         {
             <li id="item_@item.Id">
-                @item.Published @item.FeedTitle <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><button onclick="markAsUnread(@item.Id)">Mark as unread</button>
+                @item.Published @item.FeedTitle <a href="@item.Uri" rel="noreferrer" target="_blank">@item.Title</a><button onclick="markAsUnread(@item.Id)">Mark as unread</button>
             </li>
         }
     </ul>

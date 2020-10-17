@@ -12,8 +12,8 @@ namespace Reader.Services
     {
         Task GetFullContent(int id);
         Item GetItem(int id);
-        IEnumerable<ItemSummary> GetUnread();
-        IEnumerable<ItemSummary> GetRead();
+        IEnumerable<UnreadItemSummary> GetUnread();
+        IEnumerable<ReadItemSummary> GetRead();
         Task AddItem(Item item);
         bool ItemExists(string uri);
         Task MarkAsRead(int id);
@@ -96,10 +96,10 @@ namespace Reader.Services
             await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<ItemSummary> GetUnread()
+        public IEnumerable<UnreadItemSummary> GetUnread()
         {
             return _context.Items.Where(i => i.Read == null).OrderByDescending(i => i.Published).Select(i =>
-            new ItemSummary
+            new UnreadItemSummary
             {
                 Id = i.Id,
                 Title = i.Title,
@@ -108,23 +108,33 @@ namespace Reader.Services
             });
         }
 
-        public IEnumerable<ItemSummary> GetRead()
+        public IEnumerable<ReadItemSummary> GetRead()
         {
-            return _context.Items.Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ItemSummary
+            return _context.Items.Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ReadItemSummary
             {
                 Id = i.Id,
+                Uri = i.Uri,
                 Title = i.Title,
                 Published = i.Published == null ? null : i.Published.ToString(),
-                FeedTitle = i.Feed.Title
+                FeedTitle = i.Feed.Title,
             });
         }
     }
 
-    public class ItemSummary
+    public class UnreadItemSummary
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Published { get; set; }
         public string FeedTitle { get; set; }
+    }
+
+    public class ReadItemSummary
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Published { get; set; }
+        public string FeedTitle { get; set; }
+        public string Uri { get; set; }
     }
 }
