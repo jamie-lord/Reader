@@ -21,6 +21,7 @@ namespace Reader
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddAntiforgery();
             services.AddDbContext<Context>();
 
             services.AddScoped<IFeedsService, FeedsService>();
