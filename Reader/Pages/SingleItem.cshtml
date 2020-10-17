@@ -6,6 +6,10 @@
 <h1>@Model.Item.Title</h1>
 <p>@Model.Item.Published</p>
 <p>@Model.Item.Author</p>
+@if (Model.Item.Read == null)
+{
+    <form method="post" asp-page-handler="MarkAsRead" asp-route-id="@Model.Item.Id"><button type="submit">Mark as read</button></form>
+}
 <a href="@Model.Item.Uri" rel="noreferrer" target="_blank">Original item</a>
 
 @Html.Raw(Model.Item.FullContent)
