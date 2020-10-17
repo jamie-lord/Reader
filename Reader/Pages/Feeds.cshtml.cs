@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Reader.Models;
 using Reader.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace Reader.Pages
     {
         private readonly IFeedsService _feedsService;
 
-        public IEnumerable<Feed> Feeds { get; private set; }
+        public IEnumerable<FeedSummary> Feeds { get; private set; }
 
         public string PageTitle
         {

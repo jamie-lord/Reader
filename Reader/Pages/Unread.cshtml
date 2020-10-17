@@ -1,6 +1,8 @@
-﻿@page
+﻿@page "{handler?}"
 @using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Antiforgery;
 @model Reader.Pages.UnreadModel
+@inject IAntiforgery antiforgery
 @{
     ViewData["Title"] = Model.PageTitle;
 }
@@ -16,9 +18,25 @@ else
     <ul>
         @foreach (var item in Model.Items)
         {
-            <li>
-                <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><form method="post" asp-page-handler="MarkAsRead" asp-route-id="@item.Id"><button type="submit">Mark as read</button></form>
+            <li id="item_@item.Id">
+                @item.Published @item.FeedTitle <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><button onclick="markAsRead(@item.Id)">Mark as read</button>
             </li>
         }
     </ul>
 }
+
+<script>
+    async function markAsRead(id) {
+        const itemElement = document.getElementById(`item_${id}`);
+        itemElement.remove();
+
+        await fetch(`/Unread/MarkAsRead?id=${id}`, {
+            method: 'POST', headers: { 'RequestVerificationToken': '@antiforgery.GetAndStoreTokens(HttpContext).RequestToken' }
+        });
+
+        // Reload the page if there are no items left
+        if (document.querySelectorAll('[id^=item_]').length === 0) {
+            location.href = '/Unread';
+        }
+    }
+</script>

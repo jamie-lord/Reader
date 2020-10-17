@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Reader.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reader.Pages
 {
@@ -35,7 +35,7 @@ namespace Reader.Pages
         public async Task<IActionResult> OnPostMarkAsRead(int id)
         {
             await _itemsService.MarkAsRead(id);
-            return RedirectToPage("Unread");
+            return new OkResult();
         }
 
         public async Task<IActionResult> OnPostMarkAllAsRead(string ids)

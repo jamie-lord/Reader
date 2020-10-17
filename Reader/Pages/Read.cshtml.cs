@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reader.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reader.Pages
 {
@@ -34,7 +34,7 @@ namespace Reader.Pages
         public async Task<IActionResult> OnPostMarkAsUnread(int id)
         {
             await _itemsService.MarkAsUnread(id);
-            return RedirectToPage("Read");
+            return new OkResult();
         }
     }
 }

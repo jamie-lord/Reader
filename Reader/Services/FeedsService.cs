@@ -12,7 +12,7 @@ namespace Reader.Services
     public interface IFeedsService
     {
         Task RefreshAllFeeds(CancellationToken stoppingToken);
-        IEnumerable<Models.Feed> GetFeeds();
+        IEnumerable<FeedSummary> GetFeeds();
         Task AddFeed(Models.Feed feed);
         Models.Feed Get(int id);
         Task UpdateFeed(Models.Feed feed);
@@ -54,9 +54,17 @@ namespace Reader.Services
             }
         }
 
-        public IEnumerable<Models.Feed> GetFeeds()
+        public IEnumerable<FeedSummary> GetFeeds()
         {
-            return _context.Feeds;
+            var feeds = _context.Feeds.Select(f => new FeedSummary
+            {
+                Id = f.Id,
+                LastChecked = f.LastChecked.ToString(),
+                Title = f.Title,
+                ItemCount = f.Items.Count
+            });
+
+            return feeds;
         }
 
         public async Task AddFeed(Models.Feed feed)
@@ -155,5 +163,13 @@ namespace Reader.Services
                 await _itemsService.GetFullContent(newItem.Id);
             }
         }
+    }
+
+    public class FeedSummary
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string LastChecked { get; set; }
+        public int ItemCount { get; set; }
     }
 }
