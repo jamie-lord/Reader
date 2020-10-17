@@ -1,4 +1,5 @@
-﻿using Reader.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Reader.Data;
 using Reader.Models;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace Reader.Services
 
         public Item GetItem(int id)
         {
-            return _context.Items.Find(id);
+            return _context.Items.Include(i => i.Feed).SingleOrDefault(i => i.Id == id);
         }
 
         public bool ItemExists(string uri)
