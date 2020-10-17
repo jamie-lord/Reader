@@ -34,7 +34,7 @@ namespace Reader.Pages
         public async Task<IActionResult> OnPostMarkAsUnread(int id)
         {
             await _itemsService.MarkAsUnread(id);
-            return RedirectToPage("Read");
+            return new OkResult();
         }
     }
 }

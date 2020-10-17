@@ -1,5 +1,7 @@
 ﻿@page "{handler?}"
+@using Microsoft.AspNetCore.Antiforgery;
 @model Reader.Pages.ReadModel
+@inject IAntiforgery antiforgery
 @{
     ViewData["Title"] = Model.PageTitle;
 }
@@ -13,9 +15,25 @@ else
     <ul>
         @foreach (var item in Model.Items)
         {
-            <li>
-                <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><form method="post" asp-page-handler="MarkAsUnread" asp-route-id="@item.Id"><button type="submit">Mark as unread</button></form>
+            <li id="item_@item.Id">
+                <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><button onclick="markAsUnread(@item.Id)">Mark as unread</button>
             </li>
         }
     </ul>
 }
+
+<script>
+    async function markAsUnread(id) {
+        const itemElement = document.getElementById(`item_${id}`);
+        itemElement.remove();
+
+        await fetch(`/Read/MarkAsUnread?id=${id}`, {
+            method: 'POST', headers: { 'RequestVerificationToken': '@antiforgery.GetAndStoreTokens(HttpContext).RequestToken' }
+        });
+
+        // Reload the page if there are no items left
+        if (document.querySelectorAll('[id^=item_]').length === 0) {
+            location.href = '/Read';
+        }
+    }
+</script>
