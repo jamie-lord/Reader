@@ -97,7 +97,7 @@ namespace Reader.Services
 
         public IEnumerable<ItemSummary> GetUnread()
         {
-            return _context.Items.Where(i => i.Read == null).Select(i =>
+            return _context.Items.Where(i => i.Read == null).OrderByDescending(i => i.Published).Select(i =>
             new ItemSummary
             {
                 Id = i.Id,
@@ -108,7 +108,7 @@ namespace Reader.Services
 
         public IEnumerable<ItemSummary> GetRead()
         {
-            return _context.Items.Where(i => i.Read != null).Select(i => new ItemSummary
+            return _context.Items.Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ItemSummary
             {
                 Id = i.Id,
                 Title = i.Title,
