@@ -101,7 +101,8 @@ namespace Reader.Services
             new ItemSummary
             {
                 Id = i.Id,
-                Title = i.Title
+                Title = i.Title,
+                FeedTitle = i.Feed.Title
             });
         }
 
@@ -110,7 +111,8 @@ namespace Reader.Services
             return _context.Items.Where(i => i.Read != null).Select(i => new ItemSummary
             {
                 Id = i.Id,
-                Title = i.Title
+                Title = i.Title,
+                FeedTitle = i.Feed.Title
             });
         }
     }
@@ -119,5 +121,6 @@ namespace Reader.Services
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string FeedTitle { get; set; }
     }
 }
