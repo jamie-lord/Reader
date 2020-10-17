@@ -102,6 +102,7 @@ namespace Reader.Services
             {
                 Id = i.Id,
                 Title = i.Title,
+                Published = i.Published == null ? null : i.Published.ToString(),
                 FeedTitle = i.Feed.Title
             });
         }
@@ -112,6 +113,7 @@ namespace Reader.Services
             {
                 Id = i.Id,
                 Title = i.Title,
+                Published = i.Published == null ? null : i.Published.ToString(),
                 FeedTitle = i.Feed.Title
             });
         }
@@ -121,6 +123,7 @@ namespace Reader.Services
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string Published { get; set; }
         public string FeedTitle { get; set; }
     }
 }
