@@ -12,8 +12,8 @@ namespace Reader.Services
     {
         Task GetFullContent(int id);
         Item GetItem(int id);
-        IEnumerable<UnreadItemSummary> GetUnread();
-        IEnumerable<ReadItemSummary> GetRead();
+        IEnumerable<ItemSummary> GetUnread();
+        IEnumerable<ItemSummary> GetRead();
         Task AddItem(Item item);
         bool ItemExists(string uri);
         Task MarkAsRead(int id);
@@ -96,45 +96,65 @@ namespace Reader.Services
             await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<UnreadItemSummary> GetUnread()
+        public IEnumerable<ItemSummary> GetUnread()
         {
             return _context.Items.Where(i => i.Read == null).OrderByDescending(i => i.Published).Select(i =>
-            new UnreadItemSummary
-            {
-                Id = i.Id,
-                Title = i.Title,
-                Published = i.Published == null ? null : i.Published.ToString(),
-                FeedTitle = i.Feed.Title
-            });
-        }
-
-        public IEnumerable<ReadItemSummary> GetRead()
-        {
-            return _context.Items.Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ReadItemSummary
+            new ItemSummary
             {
                 Id = i.Id,
                 Uri = i.Uri,
                 Title = i.Title,
                 Published = i.Published == null ? null : i.Published.ToString(),
                 FeedTitle = i.Feed.Title,
+                FeedUri = i.Feed.Uri
+            });
+        }
+
+        public IEnumerable<ItemSummary> GetRead()
+        {
+            return _context.Items.Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ItemSummary
+            {
+                Id = i.Id,
+                Uri = i.Uri,
+                Title = i.Title,
+                Published = i.Published == null ? null : i.Published.ToString(),
+                FeedTitle = i.Feed.Title,
+                FeedUri = i.Feed.Uri
             });
         }
     }
 
-    public class UnreadItemSummary
+    public class ItemSummary
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Published { get; set; }
         public string FeedTitle { get; set; }
-    }
-
-    public class ReadItemSummary
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Published { get; set; }
-        public string FeedTitle { get; set; }
+        public string FeedUri { get; set; }
         public string Uri { get; set; }
+
+        private string _sourceHost;
+
+        public string SourceHost
+        {
+            get
+            {
+                if (_sourceHost != null)
+                {
+                    return _sourceHost;
+                }
+                var itemHost = new Uri(Uri).Host;
+                var feedHost = new Uri(FeedUri).Host;
+                if (!itemHost.Contains(feedHost) && !feedHost.Contains(itemHost))
+                {
+                    if (itemHost.StartsWith("www."))
+                    {
+                        itemHost = itemHost.Remove(0, 4);
+                    }
+                    _sourceHost = itemHost;
+                }
+                return _sourceHost;
+            }
+        }
     }
 }

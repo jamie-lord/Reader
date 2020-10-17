@@ -11,7 +11,7 @@ namespace Reader.Pages
     {
         private readonly IItemsService _itemsService;
 
-        public IEnumerable<ReadItemSummary> Items { get; private set; }
+        public IEnumerable<ItemSummary> Items { get; private set; }
 
         public string PageTitle
         {
