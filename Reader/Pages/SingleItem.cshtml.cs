@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reader.Models;
 using Reader.Services;
+using System.Threading.Tasks;
 
 namespace Reader.Pages
 {
@@ -18,6 +20,12 @@ namespace Reader.Pages
         public void OnGet(int id)
         {
             Item = _itemsService.GetItem(id);
+        }
+
+        public async Task<IActionResult> OnPostMarkAsRead(int id)
+        {
+            await _itemsService.MarkAsRead(id);
+            return RedirectToPage("Unread");
         }
     }
 }

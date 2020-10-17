@@ -1,4 +1,5 @@
-﻿using Reader.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Reader.Data;
 using Reader.Models;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace Reader.Services
 
         public Item GetItem(int id)
         {
-            return _context.Items.Find(id);
+            return _context.Items.Include(i => i.Feed).SingleOrDefault(i => i.Id == id);
         }
 
         public bool ItemExists(string uri)
@@ -101,9 +102,11 @@ namespace Reader.Services
             new ItemSummary
             {
                 Id = i.Id,
+                Uri = i.Uri,
                 Title = i.Title,
                 Published = i.Published == null ? null : i.Published.ToString(),
-                FeedTitle = i.Feed.Title
+                FeedTitle = i.Feed.Title,
+                FeedUri = i.Feed.Uri
             });
         }
 
@@ -112,9 +115,11 @@ namespace Reader.Services
             return _context.Items.Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ItemSummary
             {
                 Id = i.Id,
+                Uri = i.Uri,
                 Title = i.Title,
                 Published = i.Published == null ? null : i.Published.ToString(),
-                FeedTitle = i.Feed.Title
+                FeedTitle = i.Feed.Title,
+                FeedUri = i.Feed.Uri
             });
         }
     }
@@ -125,5 +130,31 @@ namespace Reader.Services
         public string Title { get; set; }
         public string Published { get; set; }
         public string FeedTitle { get; set; }
+        public string FeedUri { get; set; }
+        public string Uri { get; set; }
+
+        private string _sourceHost;
+
+        public string SourceHost
+        {
+            get
+            {
+                if (_sourceHost != null)
+                {
+                    return _sourceHost;
+                }
+                var itemHost = new Uri(Uri).Host;
+                var feedHost = new Uri(FeedUri).Host;
+                if (!itemHost.Contains(feedHost) && !feedHost.Contains(itemHost))
+                {
+                    if (itemHost.StartsWith("www."))
+                    {
+                        itemHost = itemHost.Remove(0, 4);
+                    }
+                    _sourceHost = itemHost;
+                }
+                return _sourceHost;
+            }
+        }
     }
 }

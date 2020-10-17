@@ -19,7 +19,8 @@ else
         @foreach (var item in Model.Items)
         {
             <li id="item_@item.Id">
-                @item.Published @item.FeedTitle <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><button onclick="markAsRead(@item.Id)">Mark as read</button>
+                @item.Published @item.FeedTitle @if (item.SourceHost != null)
+                {@item.SourceHost} <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><button onclick="markAsRead(@item.Id)">Mark as read</button>
             </li>
         }
     </ul>
@@ -36,7 +37,7 @@ else
 
         // Reload the page if there are no items left
         if (document.querySelectorAll('[id^=item_]').length === 0) {
-            location.href = '/Unread';
+            location.href = '/';
         }
     }
 </script>
