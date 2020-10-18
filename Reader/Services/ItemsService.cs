@@ -40,19 +40,26 @@ namespace Reader.Services
         {
             var item = _context.Items.Find(id);
 
-            SmartReader.Reader sr = new SmartReader.Reader(item.Uri)
+            try
             {
-                Debug = true,
-                LoggerDelegate = Console.WriteLine,
-            };
+                SmartReader.Reader sr = new SmartReader.Reader(item.Uri)
+                {
+                    Debug = true,
+                    LoggerDelegate = Console.WriteLine,
+                };
 
-            SmartReader.Article article = await sr.GetArticleAsync();
+                SmartReader.Article article = await sr.GetArticleAsync();
 
-            if (article.IsReadable)
+                if (article.IsReadable)
+                {
+                    await article.ConvertImagesToDataUriAsync();
+                    item.FullContent = article.Content;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
             {
-                await article.ConvertImagesToDataUriAsync();
-                item.FullContent = article.Content;
-                await _context.SaveChangesAsync();
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -104,7 +111,8 @@ namespace Reader.Services
                 Id = i.Id,
                 Uri = i.Uri,
                 Title = i.Title,
-                Published = i.Published == null ? null : i.Published.ToString(),
+                DayPublished = i.Published == null ? null : i.Published.Value.ToString("dd/MM/yyyy"),
+                TimePublished = i.Published == null ? null : i.Published.Value.ToString("HH:mm:ss"),
                 FeedTitle = i.Feed.Title,
                 FeedUri = i.Feed.Uri
             });
@@ -117,7 +125,8 @@ namespace Reader.Services
                 Id = i.Id,
                 Uri = i.Uri,
                 Title = i.Title,
-                Published = i.Published == null ? null : i.Published.ToString(),
+                DayPublished = i.Published == null ? null : i.Published.Value.ToString("dd/MM/yyyy"),
+                TimePublished = i.Published == null ? null : i.Published.Value.ToString("HH:mm:ss"),
                 FeedTitle = i.Feed.Title,
                 FeedUri = i.Feed.Uri
             });
@@ -128,13 +137,13 @@ namespace Reader.Services
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Published { get; set; }
+        public string DayPublished { get; set; }
+        public string TimePublished { get; set; }
         public string FeedTitle { get; set; }
         public string FeedUri { get; set; }
         public string Uri { get; set; }
 
         private string _sourceHost;
-
         public string SourceHost
         {
             get
@@ -143,18 +152,28 @@ namespace Reader.Services
                 {
                     return _sourceHost;
                 }
-                var itemHost = new Uri(Uri).Host;
-                var feedHost = new Uri(FeedUri).Host;
-                if (!itemHost.Contains(feedHost) && !feedHost.Contains(itemHost))
-                {
-                    if (itemHost.StartsWith("www."))
-                    {
-                        itemHost = itemHost.Remove(0, 4);
-                    }
-                    _sourceHost = itemHost;
-                }
+                _sourceHost = ItemHelper.SourceHost(FeedUri, Uri);
                 return _sourceHost;
             }
         }
     }
+
+    public static class ItemHelper
+    {
+        public static string SourceHost(string feedUri, string itemUri)
+        {
+            var feedHost = new Uri(feedUri).Host;
+            var itemHost = new Uri(itemUri).Host;
+            if (!itemHost.Contains(feedHost) && !feedHost.Contains(itemHost))
+            {
+                if (itemHost.StartsWith("www."))
+                {
+                    itemHost = itemHost.Remove(0, 4);
+                }
+                return itemHost;
+            }
+            return null;
+        }
+    }
+
 }

@@ -11,6 +11,7 @@ namespace Reader.Pages
         private readonly IItemsService _itemsService;
 
         public Item Item { get; private set; }
+        public string SourceHost { get; private set; }
 
         public SingleItemModel(IItemsService itemsService)
         {
@@ -20,6 +21,7 @@ namespace Reader.Pages
         public void OnGet(int id)
         {
             Item = _itemsService.GetItem(id);
+            SourceHost = ItemHelper.SourceHost(Item.Feed.Uri, Item.Uri);
         }
 
         public async Task<IActionResult> OnPostMarkAsRead(int id)
