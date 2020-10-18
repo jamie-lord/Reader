@@ -5,23 +5,39 @@
 @{
     ViewData["Title"] = Model.PageTitle;
 }
-
-@if (!Model.Items.Any())
-{
-    <p>You have no read items</p>
-}
-else
-{
-    <ul>
-        @foreach (var item in Model.Items)
+<article>
+    @if (!Model.Items.Any())
+    {
+        <h1>You have no read items</h1>
+    }
+    else
+    {
+        <h1>Read</h1>
+        @foreach (var itemsForDay in Model.Items)
         {
-            <li id="item_@item.Id">
-                @item.TimePublished @item.FeedTitle @if (item.SourceHost != null)
-                {@item.SourceHost} <a href="@item.Uri" rel="noreferrer" target="_blank">@item.Title</a><button onclick="markAsUnread(@item.Id)">Mark as unread</button>
-            </li>
+            <h2 class="items-date">@itemsForDay.Key</h2>
+            <ul class="item-list">
+                @foreach (var item in itemsForDay)
+                {
+                    <li id="item_@item.Id" class="item">
+                        <div class="item-header">
+                            <a href="@item.Uri" rel="noreferrer" target="_blank">@item.Title</a>
+                            <span class="item-meta">
+                                @item.FeedTitle
+                                @if (item.SourceHost != null)
+                                {
+                                    @item.SourceHost
+                                }
+                                <time>@item.TimePublished</time>
+                            </span>
+                        </div>
+                        <button class="item-unread-button" onclick="markAsUnread(@item.Id)"></button>
+                    </li>
+                }
+            </ul>
         }
-    </ul>
-}
+    }
+</article>
 
 <script>
     async function markAsUnread(id) {

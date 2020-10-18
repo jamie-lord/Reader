@@ -59,7 +59,7 @@ header,
 main {
     margin: 0 auto;
     max-width: var(--width-content);
-    padding: 2rem 1rem;
+    padding: 0 1rem;
 }
 
 hr {
@@ -143,6 +143,10 @@ nav {
             position: relative;
             text-align: left;
         }
+
+            nav ul li:first-child {
+                margin-left: 0;
+            }
 
             /* Nav Dropdown */
             nav ul li:hover ul {
@@ -429,8 +433,8 @@ blockquote {
     }
 
 /* Application specific styles */
-.items-date:not(:first-child) {
-    margin-top: 5rem;
+.items-date {
+    margin-top: 2rem;
 }
 
 .item-list {
@@ -462,6 +466,13 @@ blockquote {
     flex: 0 1 auto;
     -webkit-mask: url(/icons/check.svg) no-repeat center;
     mask: url(/icons/check.svg) no-repeat center;
+    background-color: var(--color);
+}
+
+.item-unread-button {
+    flex: 0 1 auto;
+    -webkit-mask: url(/icons/x.svg) no-repeat center;
+    mask: url(/icons/x.svg) no-repeat center;
     background-color: var(--color);
 }
 
