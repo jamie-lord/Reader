@@ -111,7 +111,8 @@ namespace Reader.Services
                 Id = i.Id,
                 Uri = i.Uri,
                 Title = i.Title,
-                Published = i.Published == null ? null : i.Published.ToString(),
+                DayPublished = i.Published == null ? null : i.Published.Value.ToString("dd/MM/yyyy"),
+                TimePublished = i.Published == null ? null : i.Published.Value.ToString("HH:mm:ss"),
                 FeedTitle = i.Feed.Title,
                 FeedUri = i.Feed.Uri
             });
@@ -124,7 +125,8 @@ namespace Reader.Services
                 Id = i.Id,
                 Uri = i.Uri,
                 Title = i.Title,
-                Published = i.Published == null ? null : i.Published.ToString(),
+                DayPublished = i.Published == null ? null : i.Published.Value.ToString("dd/MM/yyyy"),
+                TimePublished = i.Published == null ? null : i.Published.Value.ToString("HH:mm:ss"),
                 FeedTitle = i.Feed.Title,
                 FeedUri = i.Feed.Uri
             });
@@ -135,7 +137,8 @@ namespace Reader.Services
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Published { get; set; }
+        public string DayPublished { get; set; }
+        public string TimePublished { get; set; }
         public string FeedTitle { get; set; }
         public string FeedUri { get; set; }
         public string Uri { get; set; }

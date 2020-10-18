@@ -12,7 +12,7 @@ namespace Reader.Pages
     {
         private readonly IItemsService _itemsService;
 
-        public IEnumerable<ItemSummary> Items { get; private set; }
+        public IEnumerable<IGrouping<string, ItemSummary>> Items { get; private set; }
 
         public string PageTitle
         {
@@ -29,7 +29,7 @@ namespace Reader.Pages
 
         public void OnGet()
         {
-            Items = _itemsService.GetUnread();
+            Items = _itemsService.GetUnread().GroupBy(i => i.DayPublished);
         }
 
         public async Task<IActionResult> OnPostMarkAsRead(int id)

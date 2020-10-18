@@ -6,25 +6,39 @@
 @{
     ViewData["Title"] = Model.PageTitle;
 }
-
-@if (!Model.Items.Any())
-{
-    <p>You have no unread items</p>
-}
-else
-{
-    <form method="post" asp-page-handler="MarkAllAsRead" asp-route-ids="@JsonConvert.SerializeObject(Model.Items.Select(i => i.Id))"><button type="submit">Mark all as read</button></form>
-
-    <ul>
-        @foreach (var item in Model.Items)
+<article>
+    @if (!Model.Items.Any())
+    {
+        <h1>You have no unread items</h1>
+    }
+    else
+    {
+        @foreach (var itemsForDay in Model.Items)
         {
-            <li id="item_@item.Id">
-                @item.Published @item.FeedTitle @if (item.SourceHost != null)
-                {@item.SourceHost} <a asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a><button onclick="markAsRead(@item.Id)">Mark as read</button>
-            </li>
+            <h1 class="items-date">@itemsForDay.Key</h1>
+            <ul class="item-list">
+                @foreach (var item in itemsForDay)
+                {
+                    <li id="item_@item.Id" class="item">
+                        <div class="item-header">
+                            <a class="item-title" asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a>
+                            <span class="item-meta">
+                                @item.FeedTitle
+                                @if (item.SourceHost != null)
+                                {
+                                    @item.SourceHost
+                                }
+                                <time>@item.TimePublished</time>
+                            </span>
+                        </div>
+                        <button class="item-read-button" onclick="markAsRead(@item.Id)"></button>
+                    </li>
+                }
+            </ul>
         }
-    </ul>
-}
+        <form method="post" asp-page-handler="MarkAllAsRead" asp-route-ids="@JsonConvert.SerializeObject(Model.Items.SelectMany(i => i.Select(d => d.Id))))"><button type="submit">Mark all as read</button></form>
+    }
+</article>
 
 <script>
     async function markAsRead(id) {
