@@ -18,7 +18,7 @@ namespace Reader.Pages
         {
             get
             {
-                return $"{Items?.Count()} Unread";
+                return $"{Items?.Select(x => x.Count()).Sum()} Unread";
             }
         }
 
