@@ -37,7 +37,7 @@
                 }
             </ul>
         }
-        <form method="post" asp-page-handler="MarkAllAsRead" asp-route-ids="@JsonConvert.SerializeObject(Model.Items.SelectMany(i => i.Select(d => d.Id))))"><button type="submit">Mark all as read</button></form>
+        <form method="post" asp-page-handler="MarkAllAsRead" asp-route-ids="@JsonConvert.SerializeObject(Model.Items.SelectMany(i => i.Select(d => d.Id)))"><button type="submit">Mark all as read</button></form>
     }
 </article>
 
