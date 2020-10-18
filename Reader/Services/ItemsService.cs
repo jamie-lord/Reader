@@ -40,19 +40,26 @@ namespace Reader.Services
         {
             var item = _context.Items.Find(id);
 
-            SmartReader.Reader sr = new SmartReader.Reader(item.Uri)
+            try
             {
-                Debug = true,
-                LoggerDelegate = Console.WriteLine,
-            };
+                SmartReader.Reader sr = new SmartReader.Reader(item.Uri)
+                {
+                    Debug = true,
+                    LoggerDelegate = Console.WriteLine,
+                };
 
-            SmartReader.Article article = await sr.GetArticleAsync();
+                SmartReader.Article article = await sr.GetArticleAsync();
 
-            if (article.IsReadable)
+                if (article.IsReadable)
+                {
+                    await article.ConvertImagesToDataUriAsync();
+                    item.FullContent = article.Content;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
             {
-                await article.ConvertImagesToDataUriAsync();
-                item.FullContent = article.Content;
-                await _context.SaveChangesAsync();
+                Console.WriteLine(ex.Message);
             }
         }
 
