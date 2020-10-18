@@ -144,7 +144,6 @@ namespace Reader.Services
         public string Uri { get; set; }
 
         private string _sourceHost;
-
         public string SourceHost
         {
             get
@@ -153,18 +152,28 @@ namespace Reader.Services
                 {
                     return _sourceHost;
                 }
-                var itemHost = new Uri(Uri).Host;
-                var feedHost = new Uri(FeedUri).Host;
-                if (!itemHost.Contains(feedHost) && !feedHost.Contains(itemHost))
-                {
-                    if (itemHost.StartsWith("www."))
-                    {
-                        itemHost = itemHost.Remove(0, 4);
-                    }
-                    _sourceHost = itemHost;
-                }
+                _sourceHost = ItemHelper.SourceHost(FeedUri, Uri);
                 return _sourceHost;
             }
         }
     }
+
+    public static class ItemHelper
+    {
+        public static string SourceHost(string feedUri, string itemUri)
+        {
+            var feedHost = new Uri(feedUri).Host;
+            var itemHost = new Uri(itemUri).Host;
+            if (!itemHost.Contains(feedHost) && !feedHost.Contains(itemHost))
+            {
+                if (itemHost.StartsWith("www."))
+                {
+                    itemHost = itemHost.Remove(0, 4);
+                }
+                return itemHost;
+            }
+            return null;
+        }
+    }
+
 }
