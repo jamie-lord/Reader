@@ -42,12 +42,7 @@ namespace Reader.Services
 
             try
             {
-                SmartReader.Reader sr = new SmartReader.Reader(item.Uri)
-                {
-                    Debug = true,
-                    LoggerDelegate = Console.WriteLine,
-                };
-
+                SmartReader.Reader sr = new SmartReader.Reader(item.Uri);
                 SmartReader.Article article = await sr.GetArticleAsync();
 
                 if (article.IsReadable)
@@ -65,12 +60,12 @@ namespace Reader.Services
 
         public Item GetItem(int id)
         {
-            return _context.Items.Include(i => i.Feed).SingleOrDefault(i => i.Id == id);
+            return _context.Items.AsNoTracking().Include(i => i.Feed).SingleOrDefault(i => i.Id == id);
         }
 
         public bool ItemExists(string uri)
         {
-            return _context.Items.Any(x => x.Uri == uri);
+            return _context.Items.AsNoTracking().Any(x => x.Uri == uri);
         }
 
         public async Task MarkAllAsRead(IEnumerable<int> ids)
@@ -105,7 +100,7 @@ namespace Reader.Services
 
         public IEnumerable<ItemSummary> GetUnread()
         {
-            return _context.Items.Where(i => i.Read == null).OrderByDescending(i => i.Published).Select(i =>
+            return _context.Items.AsNoTracking().Where(i => i.Read == null).OrderByDescending(i => i.Published).Select(i =>
             new ItemSummary
             {
                 Id = i.Id,
@@ -120,7 +115,7 @@ namespace Reader.Services
 
         public IEnumerable<ItemSummary> GetRead()
         {
-            return _context.Items.Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ItemSummary
+            return _context.Items.AsNoTracking().Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ItemSummary
             {
                 Id = i.Id,
                 Uri = i.Uri,

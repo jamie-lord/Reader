@@ -1,17 +1,17 @@
 ﻿using CodeHollow.FeedReader;
+using Microsoft.EntityFrameworkCore;
 using Reader.Data;
 using Reader.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Reader.Services
 {
     public interface IFeedsService
     {
-        Task RefreshAllFeeds(CancellationToken stoppingToken);
+        Task RefreshAllFeeds();
         IEnumerable<FeedSummary> GetFeeds();
         Task AddFeed(Models.Feed feed);
         Models.Feed Get(int id);
@@ -25,7 +25,6 @@ namespace Reader.Services
     {
         private readonly Context _context;
         private readonly IItemsService _itemsService;
-        private const int RefreshDelay = 1000 * 60 * 30; // 30 minutes
 
         public FeedsService(Context context, IItemsService itemsService)
         {
@@ -33,30 +32,24 @@ namespace Reader.Services
             _itemsService = itemsService;
         }
 
-        public async Task RefreshAllFeeds(CancellationToken stoppingToken)
+        public async Task RefreshAllFeeds()
         {
-            while (!stoppingToken.IsCancellationRequested)
+            var feedIds = _context.Feeds.AsNoTracking().Select(f => f.Id);
+            foreach (var id in feedIds)
             {
-                var feeds = _context.Feeds.ToList();
-
-                foreach (var feed in feeds)
+                try
                 {
-                    try
-                    {
-                        await RefreshFeed(feed.Id);
-                    }
-                    catch (Exception ex)
-                    {
-                    }
+                    await RefreshFeed(id);
                 }
-
-                await Task.Delay(RefreshDelay, stoppingToken);
+                catch (Exception ex)
+                {
+                }
             }
         }
 
         public IEnumerable<FeedSummary> GetFeeds()
         {
-            var feeds = _context.Feeds.Select(f => new FeedSummary
+            var feeds = _context.Feeds.AsNoTracking().Select(f => new FeedSummary
             {
                 Id = f.Id,
                 LastChecked = f.LastChecked.ToString(),
@@ -75,7 +68,7 @@ namespace Reader.Services
 
         public Models.Feed Get(int id)
         {
-            return _context.Feeds.Find(id);
+            return _context.Feeds.AsNoTracking().SingleOrDefault(f => f.Id == id);
         }
 
         public async Task UpdateFeed(Models.Feed feed)

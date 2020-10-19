@@ -22,13 +22,13 @@ namespace Reader
         {
             services.AddRazorPages(options =>
             {
-                options.Conventions.AddPageRoute("/Unread", "");
+                options.Conventions.AddPageRoute("/unread", "");
             });
             services.AddAntiforgery();
             services.AddDbContext<Context>();
 
-            services.AddScoped<IFeedsService, FeedsService>();
-            services.AddScoped<IItemsService, ItemsService>();
+            services.AddTransient<IFeedsService, FeedsService>();
+            services.AddTransient<IItemsService, ItemsService>();
 
 #if !DEBUG
             services.AddHostedService<RefreshAllFeedsBackgroundService>();

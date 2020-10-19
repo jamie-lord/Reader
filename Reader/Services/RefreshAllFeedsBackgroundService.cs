@@ -15,17 +15,19 @@ namespace Reader.Services
 
         public IServiceProvider Services { get; }
 
+        private const int RefreshDelay = 1000 * 60 * 30; // 30 minutes
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await RefreshAllFeeds(stoppingToken);
-        }
-
-        private async Task RefreshAllFeeds(CancellationToken stoppingToken)
-        {
-            using (var scope = Services.CreateScope())
+            while (!stoppingToken.IsCancellationRequested)
             {
-                var feedsService = scope.ServiceProvider.GetRequiredService<IFeedsService>();
-                await feedsService.RefreshAllFeeds(stoppingToken);
+                using (var scope = Services.CreateScope())
+                {
+                    var feedsService = scope.ServiceProvider.GetRequiredService<IFeedsService>();
+                    await feedsService.RefreshAllFeeds();
+                }
+
+                await Task.Delay(RefreshDelay, stoppingToken);
             }
         }
 
