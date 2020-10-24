@@ -14,6 +14,7 @@ namespace Reader.Services
         IEnumerable<ItemSummary> GetUnread();
         IEnumerable<ItemSummary> GetRead();
         Task AddItem(Item item);
+        Task AddItems(IEnumerable<Item> items);
         bool ItemExists(string uri);
         Task MarkAsRead(int id);
         Task MarkAllAsRead(IEnumerable<int> ids);
@@ -32,6 +33,12 @@ namespace Reader.Services
         public async Task AddItem(Item item)
         {
             _context.Items.Add(item);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddItems(IEnumerable<Item> items)
+        {
+            _context.Items.AddRange(items);
             await _context.SaveChangesAsync();
         }
 

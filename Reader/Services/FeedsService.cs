@@ -40,7 +40,7 @@ namespace Reader.Services
                 {
                     await RefreshFeed(id);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }
@@ -95,25 +95,7 @@ namespace Reader.Services
 
             feed.LastChecked = DateTime.Now;
             await UpdateFeed(feed);
-
-            foreach (var item in result.Items)
-            {
-                if (_itemsService.ItemExists(item.Link))
-                {
-                    // Item already exists from previous fetch or another feed
-                    continue;
-                }
-
-                var newItem = new Item
-                {
-                    Feed = feed,
-                    Published = item.PublishingDate,
-                    Title = item.Title,
-                    Uri = item.Link
-                };
-
-                await _itemsService.AddItem(newItem);
-            }
+            await GetNewItems(feed, result.Items);
         }
 
         public async Task AddFeed(string uri)
@@ -127,7 +109,13 @@ namespace Reader.Services
                 LastChecked = DateTime.Now
             };
             await AddFeed(newFeed);
-            foreach (var item in result.Items)
+            await GetNewItems(newFeed, result.Items);
+        }
+
+        private async Task GetNewItems(Models.Feed feed, IEnumerable<FeedItem> items)
+        {
+            var newItems = new List<Item>();
+            foreach (var item in items)
             {
                 if (_itemsService.ItemExists(item.Link))
                 {
@@ -135,15 +123,15 @@ namespace Reader.Services
                     continue;
                 }
 
-                var newItem = new Item
+                newItems.Add(new Item
                 {
-                    Feed = newFeed,
+                    Feed = feed,
                     Published = item.PublishingDate,
                     Title = item.Title,
                     Uri = item.Link
-                };
-                await _itemsService.AddItem(newItem);
+                });
             }
+            await _itemsService.AddItems(newItems);
         }
     }
 
