@@ -28,7 +28,7 @@ namespace Reader.Pages
 
         public void OnGet()
         {
-            Items = _itemsService.GetRead().GroupBy(i => i.DayPublished); ;
+            Items = _itemsService.GetRead().GroupBy(i => i.DatePublished); ;
         }
 
         public async Task<IActionResult> OnPostMarkAsUnread(int id)

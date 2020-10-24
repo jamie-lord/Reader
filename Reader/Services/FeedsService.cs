@@ -1,4 +1,5 @@
 ﻿using CodeHollow.FeedReader;
+using Humanizer;
 using Reader.Data;
 using Reader.Models;
 using System;
@@ -51,7 +52,7 @@ namespace Reader.Services
             var feeds = _context.Feeds.Select(f => new FeedSummary
             {
                 Id = f.Id,
-                LastChecked = f.LastChecked.ToString(),
+                LastChecked = f.LastChecked.Humanize(false, null, null),
                 Title = f.Title,
                 ItemCount = f.Items.Count
             });

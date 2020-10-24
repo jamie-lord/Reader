@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using Reader.Data;
 using Reader.Models;
 using System;
@@ -88,8 +89,8 @@ namespace Reader.Services
                 Id = i.Id,
                 Uri = i.Uri,
                 Title = i.Title,
-                DayPublished = i.Published == null ? null : i.Published.Value.ToString("dd/MM/yyyy"),
-                TimePublished = i.Published == null ? null : i.Published.Value.ToString("HH:mm:ss"),
+                DatePublished = i.Published == null ? null : i.Published.Value.ToString("dd/MM/yyyy"),
+                Age = i.Published == null ? null : i.Published.Value.Humanize(true, null, null),
                 FeedTitle = i.Feed.Title,
                 FeedUri = i.Feed.Uri
             });
@@ -102,8 +103,8 @@ namespace Reader.Services
                 Id = i.Id,
                 Uri = i.Uri,
                 Title = i.Title,
-                DayPublished = i.Published == null ? null : i.Published.Value.ToString("dd/MM/yyyy"),
-                TimePublished = i.Published == null ? null : i.Published.Value.ToString("HH:mm:ss"),
+                DatePublished = i.Published == null ? null : i.Published.Value.ToString("dd/MM/yyyy"),
+                Age = i.Published == null ? null : i.Published.Value.Humanize(true, null, null),
                 FeedTitle = i.Feed.Title,
                 FeedUri = i.Feed.Uri
             });
@@ -114,8 +115,8 @@ namespace Reader.Services
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string DayPublished { get; set; }
-        public string TimePublished { get; set; }
+        public string DatePublished { get; set; }
+        public string Age { get; set; }
         public string FeedTitle { get; set; }
         public string FeedUri { get; set; }
         public string Uri { get; set; }
