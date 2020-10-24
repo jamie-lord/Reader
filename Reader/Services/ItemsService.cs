@@ -10,7 +10,6 @@ namespace Reader.Services
 {
     public interface IItemsService
     {
-        Task GetFullContent(int id);
         Item GetItem(int id);
         IEnumerable<ItemSummary> GetUnread();
         IEnumerable<ItemSummary> GetRead();
@@ -36,36 +35,14 @@ namespace Reader.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task GetFullContent(int id)
-        {
-            var item = _context.Items.Find(id);
-
-            try
-            {
-                SmartReader.Reader sr = new SmartReader.Reader(item.Uri);
-                SmartReader.Article article = await sr.GetArticleAsync();
-
-                if (article.IsReadable)
-                {
-                    await article.ConvertImagesToDataUriAsync();
-                    item.FullContent = article.Content;
-                    await _context.SaveChangesAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
         public Item GetItem(int id)
         {
-            return _context.Items.AsNoTracking().Include(i => i.Feed).SingleOrDefault(i => i.Id == id);
+            return _context.Items.Include(i => i.Feed).SingleOrDefault(i => i.Id == id);
         }
 
         public bool ItemExists(string uri)
         {
-            return _context.Items.AsNoTracking().Any(x => x.Uri == uri);
+            return _context.Items.Any(x => x.Uri == uri);
         }
 
         public async Task MarkAllAsRead(IEnumerable<int> ids)
@@ -75,7 +52,6 @@ namespace Reader.Services
             {
                 var item = _context.Items.Find(id);
                 item.Read = now;
-                item.FullContent = null;
                 _context.Items.Update(item);
             }
             await _context.SaveChangesAsync();
@@ -85,7 +61,6 @@ namespace Reader.Services
         {
             var item = _context.Items.Find(id);
             item.Read = DateTime.Now;
-            item.FullContent = null;
             _context.Items.Update(item);
             await _context.SaveChangesAsync();
         }
@@ -100,7 +75,7 @@ namespace Reader.Services
 
         public IEnumerable<ItemSummary> GetUnread()
         {
-            return _context.Items.AsNoTracking().Where(i => i.Read == null).OrderByDescending(i => i.Published).Select(i =>
+            return _context.Items.Where(i => i.Read == null).OrderByDescending(i => i.Published).Select(i =>
             new ItemSummary
             {
                 Id = i.Id,
@@ -115,7 +90,7 @@ namespace Reader.Services
 
         public IEnumerable<ItemSummary> GetRead()
         {
-            return _context.Items.AsNoTracking().Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ItemSummary
+            return _context.Items.Where(i => i.Read != null).OrderByDescending(i => i.Published).Select(i => new ItemSummary
             {
                 Id = i.Id,
                 Uri = i.Uri,

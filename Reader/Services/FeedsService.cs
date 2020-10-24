@@ -1,5 +1,4 @@
 ﻿using CodeHollow.FeedReader;
-using Microsoft.EntityFrameworkCore;
 using Reader.Data;
 using Reader.Models;
 using System;
@@ -34,7 +33,7 @@ namespace Reader.Services
 
         public async Task RefreshAllFeeds()
         {
-            var feedIds = _context.Feeds.AsNoTracking().Select(f => f.Id);
+            var feedIds = _context.Feeds.Select(f => f.Id);
             foreach (var id in feedIds)
             {
                 try
@@ -49,7 +48,7 @@ namespace Reader.Services
 
         public IEnumerable<FeedSummary> GetFeeds()
         {
-            var feeds = _context.Feeds.AsNoTracking().Select(f => new FeedSummary
+            var feeds = _context.Feeds.Select(f => new FeedSummary
             {
                 Id = f.Id,
                 LastChecked = f.LastChecked.ToString(),
@@ -68,7 +67,7 @@ namespace Reader.Services
 
         public Models.Feed Get(int id)
         {
-            return _context.Feeds.AsNoTracking().SingleOrDefault(f => f.Id == id);
+            return _context.Feeds.SingleOrDefault(f => f.Id == id);
         }
 
         public async Task UpdateFeed(Models.Feed feed)
@@ -107,10 +106,6 @@ namespace Reader.Services
 
                 var newItem = new Item
                 {
-                    Author = item.Author,
-                    Categories = item.Categories?.ToList(),
-                    Content = item.Content,
-                    Description = item.Description,
                     Feed = feed,
                     Published = item.PublishingDate,
                     Title = item.Title,
@@ -118,7 +113,6 @@ namespace Reader.Services
                 };
 
                 await _itemsService.AddItem(newItem);
-                await _itemsService.GetFullContent(newItem.Id);
             }
         }
 
@@ -143,17 +137,12 @@ namespace Reader.Services
 
                 var newItem = new Item
                 {
-                    Author = item.Author,
-                    Categories = item.Categories?.ToList(),
-                    Content = item.Content,
-                    Description = item.Description,
                     Feed = newFeed,
                     Published = item.PublishingDate,
                     Title = item.Title,
                     Uri = item.Link
                 };
                 await _itemsService.AddItem(newItem);
-                await _itemsService.GetFullContent(newItem.Id);
             }
         }
     }

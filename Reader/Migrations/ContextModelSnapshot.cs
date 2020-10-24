@@ -48,23 +48,8 @@ namespace Reader.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Author")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Categories")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("FeedId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("FullContent")
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Published")
                         .HasColumnType("TEXT");

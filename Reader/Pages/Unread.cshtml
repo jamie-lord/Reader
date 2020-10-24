@@ -22,7 +22,7 @@
                 {
                     <li id="item_@item.Id" class="item">
                         <div class="item-header">
-                            <a class="item-title" asp-page="SingleItem" asp-route-id="@item.Id">@item.Title</a>
+                            <a class="item-title" href="@item.Uri" rel="noreferrer" target="_blank">@item.Title</a>
                             <span class="item-meta">
                                 @item.FeedTitle
                                 @if (item.SourceHost != null)

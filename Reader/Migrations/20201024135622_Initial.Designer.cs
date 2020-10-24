@@ -9,8 +9,8 @@ using Reader.Data;
 namespace Reader.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20201014185646_AddedItemRead")]
-    partial class AddedItemRead
+    [Migration("20201024135622_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,23 +50,8 @@ namespace Reader.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Author")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Categories")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("FeedId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("FullContent")
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Published")
                         .HasColumnType("TEXT");
