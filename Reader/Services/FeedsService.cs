@@ -1,5 +1,4 @@
 ﻿using CodeHollow.FeedReader;
-using Microsoft.EntityFrameworkCore;
 using Reader.Data;
 using Reader.Models;
 using System;
@@ -34,14 +33,14 @@ namespace Reader.Services
 
         public async Task RefreshAllFeeds()
         {
-            var feedIds = _context.Feeds.AsNoTracking().Select(f => f.Id);
+            var feedIds = _context.Feeds.Select(f => f.Id);
             foreach (var id in feedIds)
             {
                 try
                 {
                     await RefreshFeed(id);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }
@@ -49,7 +48,7 @@ namespace Reader.Services
 
         public IEnumerable<FeedSummary> GetFeeds()
         {
-            var feeds = _context.Feeds.AsNoTracking().Select(f => new FeedSummary
+            var feeds = _context.Feeds.Select(f => new FeedSummary
             {
                 Id = f.Id,
                 LastChecked = f.LastChecked.ToString(),
@@ -68,7 +67,7 @@ namespace Reader.Services
 
         public Models.Feed Get(int id)
         {
-            return _context.Feeds.AsNoTracking().SingleOrDefault(f => f.Id == id);
+            return _context.Feeds.SingleOrDefault(f => f.Id == id);
         }
 
         public async Task UpdateFeed(Models.Feed feed)
@@ -96,30 +95,7 @@ namespace Reader.Services
 
             feed.LastChecked = DateTime.Now;
             await UpdateFeed(feed);
-
-            foreach (var item in result.Items)
-            {
-                if (_itemsService.ItemExists(item.Link))
-                {
-                    // Item already exists from previous fetch or another feed
-                    continue;
-                }
-
-                var newItem = new Item
-                {
-                    Author = item.Author,
-                    Categories = item.Categories?.ToList(),
-                    Content = item.Content,
-                    Description = item.Description,
-                    Feed = feed,
-                    Published = item.PublishingDate,
-                    Title = item.Title,
-                    Uri = item.Link
-                };
-
-                await _itemsService.AddItem(newItem);
-                await _itemsService.GetFullContent(newItem.Id);
-            }
+            await GetNewItems(feed, result.Items);
         }
 
         public async Task AddFeed(string uri)
@@ -133,7 +109,13 @@ namespace Reader.Services
                 LastChecked = DateTime.Now
             };
             await AddFeed(newFeed);
-            foreach (var item in result.Items)
+            await GetNewItems(newFeed, result.Items);
+        }
+
+        private async Task GetNewItems(Models.Feed feed, IEnumerable<FeedItem> items)
+        {
+            var newItems = new List<Item>();
+            foreach (var item in items)
             {
                 if (_itemsService.ItemExists(item.Link))
                 {
@@ -141,20 +123,15 @@ namespace Reader.Services
                     continue;
                 }
 
-                var newItem = new Item
+                newItems.Add(new Item
                 {
-                    Author = item.Author,
-                    Categories = item.Categories?.ToList(),
-                    Content = item.Content,
-                    Description = item.Description,
-                    Feed = newFeed,
+                    Feed = feed,
                     Published = item.PublishingDate,
                     Title = item.Title,
                     Uri = item.Link
-                };
-                await _itemsService.AddItem(newItem);
-                await _itemsService.GetFullContent(newItem.Id);
+                });
             }
+            await _itemsService.AddItems(newItems);
         }
     }
 

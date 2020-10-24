@@ -481,7 +481,3 @@ blockquote {
     font-size: small;
     color: var(--color-text-secondary);
 }
-
-.single-item-heading {
-    margin-bottom: 0;
-}

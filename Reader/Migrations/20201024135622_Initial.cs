@@ -33,11 +33,8 @@ namespace Reader.Migrations
                     FeedId = table.Column<int>(type: "INTEGER", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
                     Uri = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: true),
                     Published = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Author = table.Column<string>(type: "TEXT", nullable: true),
-                    Categories = table.Column<string>(type: "TEXT", nullable: true),
-                    Content = table.Column<string>(type: "TEXT", nullable: true)
+                    Read = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
