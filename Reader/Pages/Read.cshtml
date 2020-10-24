@@ -15,36 +15,44 @@
         <h1>Read</h1>
         @foreach (var itemsForDay in Model.Items)
         {
-            <h2 class="items-date">@itemsForDay.Key</h2>
-            <ul class="item-list">
-                @foreach (var item in itemsForDay)
-                {
-                    <li id="item_@item.Id" class="item">
-                        <div class="item-header">
-                            <a href="@item.Uri" rel="noreferrer" target="_blank">@item.Title</a>
-                            <span class="item-meta">
-                                @item.FeedTitle
-                                @if (item.SourceHost != null)
-                                {
-                                    @item.SourceHost
-                                }
-                                <time>@item.Age</time>
-                            </span>
-                        </div>
-                        <button class="item-unread-button" onclick="markAsUnread(@item.Id)"></button>
-                    </li>
-                }
-            </ul>
+            <div id="items_@itemsForDay.Key">
+                <h2 class="items-date">@itemsForDay.Key</h2>
+                <ul class="item-list">
+                    @foreach (var item in itemsForDay)
+                    {
+                        <li id="item_@(itemsForDay.Key)_@(item.Id)" class="item">
+                            <div class="item-header">
+                                <a href="@item.Uri" rel="noreferrer" target="_blank">@item.Title</a>
+                                <span class="item-meta">
+                                    @item.FeedTitle
+                                    @if (item.SourceHost != null)
+                                    {
+                                        @item.SourceHost
+                                    }
+                                    <time>@item.Age</time>
+                                </span>
+                            </div>
+                            <button class="item-unread-button" onclick="markAsUnread('@itemsForDay.Key', @item.Id)"></button>
+                        </li>
+                    }
+                </ul>
+            </div>
         }
     }
 </article>
 
 <script>
-    async function markAsUnread(id) {
-        const itemElement = document.getElementById(`item_${id}`);
+    async function markAsUnread(day, itemId) {
+        const itemElement = document.getElementById(`item_${day}_${itemId}`);
         itemElement.remove();
 
-        await fetch(`/Read/MarkAsUnread?id=${id}`, {
+        // Remove day heading if no more items remain
+        if (document.querySelectorAll(`[id^='item_${day}']`).length === 0) {
+            const itemsForDay = document.getElementById(`items_${day}`);
+            itemsForDay.remove();
+        }
+
+        await fetch(`/Read/MarkAsUnread?id=${itemId}`, {
             method: 'POST', headers: { 'RequestVerificationToken': '@antiforgery.GetAndStoreTokens(HttpContext).RequestToken' }
         });
 

@@ -16,37 +16,45 @@
         <h1>Unread</h1>
         @foreach (var itemsForDay in Model.Items)
         {
-            <h2 class="items-date">@itemsForDay.Key</h2>
-            <ul class="item-list">
-                @foreach (var item in itemsForDay)
-                {
-                    <li id="item_@item.Id" class="item">
-                        <div class="item-header">
-                            <a class="item-title" href="@item.Uri" rel="noreferrer" target="_blank">@item.Title</a>
-                            <span class="item-meta">
-                                @item.FeedTitle
-                                @if (item.SourceHost != null)
-                                {
-                                    @item.SourceHost
-                                }
-                                <time>@item.Age</time>
-                            </span>
-                        </div>
-                        <button class="item-read-button" onclick="markAsRead(@item.Id)"></button>
-                    </li>
-                }
-            </ul>
+            <div id="items_@itemsForDay.Key">
+                <h2 class="items-date">@itemsForDay.Key</h2>
+                <ul class="item-list">
+                    @foreach (var item in itemsForDay)
+                    {
+                        <li id="item_@(itemsForDay.Key)_@(item.Id)" class="item">
+                            <div class="item-header">
+                                <a class="item-title" href="@item.Uri" rel="noreferrer" target="_blank">@item.Title</a>
+                                <span class="item-meta">
+                                    @item.FeedTitle
+                                    @if (item.SourceHost != null)
+                                    {
+                                        @item.SourceHost
+                                    }
+                                    <time>@item.Age</time>
+                                </span>
+                            </div>
+                            <button class="item-read-button" onclick="markAsRead('@itemsForDay.Key', @item.Id)"></button>
+                        </li>
+                    }
+                </ul>
+            </div>
         }
         <form method="post" asp-page-handler="MarkAllAsRead" asp-route-ids="@JsonConvert.SerializeObject(Model.Items.SelectMany(i => i.Select(d => d.Id)))"><button type="submit">Mark all as read</button></form>
     }
 </article>
 
 <script>
-    async function markAsRead(id) {
-        const itemElement = document.getElementById(`item_${id}`);
+    async function markAsRead(day, itemId) {
+        const itemElement = document.getElementById(`item_${day}_${itemId}`);
         itemElement.remove();
 
-        await fetch(`/Unread/MarkAsRead?id=${id}`, {
+        // Remove day heading if no more items remain
+        if (document.querySelectorAll(`[id^='item_${day}']`).length === 0) {
+            const itemsForDay = document.getElementById(`items_${day}`);
+            itemsForDay.remove();
+        }
+
+        await fetch(`/Unread/MarkAsRead?id=${itemId}`, {
             method: 'POST', headers: { 'RequestVerificationToken': '@antiforgery.GetAndStoreTokens(HttpContext).RequestToken' }
         });
 
