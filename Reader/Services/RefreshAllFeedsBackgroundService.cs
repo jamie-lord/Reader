@@ -15,7 +15,7 @@ namespace Reader.Services
 
         public IServiceProvider Services { get; }
 
-        private const int RefreshDelay = 1000 * 60 * 30; // 30 minutes
+        private const int RefreshDelay = 1000 * 60 * 20; // 20 minutes
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
