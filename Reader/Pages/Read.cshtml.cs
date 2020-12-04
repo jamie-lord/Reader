@@ -13,11 +13,11 @@ namespace Reader.Pages
 
         public IEnumerable<IGrouping<string, ItemSummary>> Items { get; private set; }
 
-        public string PageTitle
+        public int ItemsCount
         {
             get
             {
-                return $"{Items?.Select(x => x.Count()).Sum()} Read";
+                return Items == null ? 0 : Items.Select(x => x.Count()).Sum();
             }
         }
 

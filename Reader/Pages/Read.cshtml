@@ -3,7 +3,7 @@
 @model Reader.Pages.ReadModel
 @inject IAntiforgery antiforgery
 @{
-    ViewData["Title"] = Model.PageTitle;
+    ViewData["Title"] = $"{Model.ItemsCount} Read";
 }
 <article>
     @if (!Model.Items.Any())
@@ -12,7 +12,7 @@
     }
     else
     {
-        <h1>Read</h1>
+        <h1>@Model.ItemsCount Read</h1>
         @foreach (var itemsForDay in Model.Items)
         {
             <div id="items_@itemsForDay.Key">

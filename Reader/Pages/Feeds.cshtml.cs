@@ -13,11 +13,11 @@ namespace Reader.Pages
 
         public IEnumerable<FeedSummary> Feeds { get; private set; }
 
-        public string PageTitle
+        public int FeedsCount
         {
             get
             {
-                return $"{Feeds?.Count()} Feeds";
+                return Feeds == null ? 0 : Feeds.Count();
             }
         }
 

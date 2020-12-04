@@ -1,12 +1,12 @@
 ﻿@page
 @model Reader.Pages.FeedsModel
 @{
-    ViewData["Title"] = Model.PageTitle;
+    ViewData["Title"] = $"{Model.FeedsCount} Feeds";
 }
-<h1>Feeds</h1>
+<h1>@Model.FeedsCount Feeds</h1>
 
 <form method="post" asp-page-handler="AddNewFeed">
-    <input asp-for="NewFeedUri" />
+    <input asp-for="NewFeedUri" placeholder="New feed URL" />
     <button type="submit">Add</button>
 </form>
 
